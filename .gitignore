@@ -1,5 +1,3 @@
-./cpu/integration_cpu
-./gpu/integration_gpu
-./cpu/*.o
-./gpu/*.o
 .vscode
+integration
+*.o
