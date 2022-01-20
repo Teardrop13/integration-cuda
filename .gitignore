@@ -2,3 +2,4 @@
 ./gpu/integration_gpu
 ./cpu/*.o
 ./gpu/*.o
+.vscode
