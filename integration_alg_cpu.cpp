@@ -1,6 +1,6 @@
 #include "integration_alg_cpu.h"
 
-float cpu_integrate(float *x_list, float *y_list, int length) {
+float cpu_integrate(float *x_list, float *y_list, long long length) {
     float result = 0;
 
     for (int i=1; i < length; i++) {

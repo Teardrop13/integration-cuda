@@ -1,9 +1,13 @@
 #include <math.h>
 #include <stdio.h>
 #include <algorithm>
+#include <time.h>
 
 
 void generate(float *x_list, float *y_list, const int number, const float max) {
+    
+    srand (time(NULL));
+
     for (int i = 0; i < number; i++) {
         float x = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/max));
 
