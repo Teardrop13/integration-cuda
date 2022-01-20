@@ -3,6 +3,6 @@
 
 #include <vector>
 
-float cpu_integrate(std::vector<float> x_list, std::vector<float> y_list);
+float cpu_integrate(float *x_list, float *y_list, int length);
 
 #endif

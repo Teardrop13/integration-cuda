@@ -8,13 +8,25 @@
 long maxGridSize;
 long maxThreadsPerBlock;
 
-float *d_x_array;
-float *d_y_array;
-long long *d_length;
+float *d_x_list;
+float *d_y_list;
+int *d_length;
 float *d_result;
+float *d_result_list;
 
-__global__ void integrate(float *x_array, float *y_array, long long *length, float *result) {
+__global__ void integrate(float *x_array, float *y_array, int *length) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
 
+    if (i < *(length-1)) {
+        d_result_list[i] = (y_list[i] + y_list[i+1]) * (x_list[i+1] - x_list[i]) / 2
+    }
+}
+
+__global__ void sum_array(float *array, int *length, float *result) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i < *length) {
+        atomicAdd(result, array[i]);
+    }
 }
 
 void cuda_initialize() {
@@ -34,33 +46,40 @@ void cuda_initialize() {
 }
 
 void cuda_clean() {
-    cudaFree(d_x_array);
-    cudaFree(d_y_array);
+    cudaFree(d_x_list);
+    cudaFree(d_y_list);
     cudaFree(d_length);
     cudaFree(d_result);
 }
 
-float gpu_integrate(std::vector<float> x_list, std::vector<float> y_list) {
+float gpu_integrate(float *x_list, float *y_list, int length) {
     cuda_initialize();
 
-    float *x_array = &x_list[0];
-
-    long long length = x_list.size()
     float result = 0;
 
-    cudaMalloc((void **)&d_x_array, sizeof(float) * length);
-    cudaMemcpy(d_x_array, &x_array, sizeof(float) * length, cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&d_x_list, sizeof(float) * length);
+    cudaMemcpy(d_x_list, &x_list, sizeof(float) * length, cudaMemcpyHostToDevice);
 
-    cudaMalloc((void **)&d_y_array, sizeof(float) * length);
-    cudaMemcpy(d_y_array, &y_array, sizeof(float) * length, cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&d_y_list, sizeof(float) * length);
+    cudaMemcpy(d_y_list, &y_list, sizeof(float) * length, cudaMemcpyHostToDevice);
 
-    cudaMalloc((void **)&d_length, sizeof(long long));
-    cudaMemcpy(d_length, &length, sizeof(long long), cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&d_result_list, sizeof(float) * (length - 1));
+
+    cudaMalloc((void **)&d_length, sizeof(int));
+    cudaMemcpy(d_length, &length, sizeof(int), cudaMemcpyHostToDevice);
 
     cudaMalloc((void **)&d_result, sizeof(float));
     cudaMemcpy(d_result, &result, sizeof(float), cudaMemcpyHostToDevice);
 
-    integrate<<>>>(d_x_list, d_y_list, d_length, d_result);
+    integrate<<>>>(d_x_list, d_y_list, d_length);
+
+    cudaDeviceSynchronize();
+
+    sum_array<<>>>(d_result_list, d_length, d_result);
+
+    cudaDeviceSynchronize();
+
+    cudaMemcpy(result, &d_result, sizeof(float), cudaMemcpyDeviceToHost);
 
     cuda_clean();
 
