@@ -72,7 +72,8 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaMalloc((void **)&d_result, sizeof(float));
     cudaMemcpy(d_result, &result, sizeof(float), cudaMemcpyHostToDevice);
 
-    long long blocks = ceil(length / 16.);
+    long long threads = 256;
+    long long blocks = ceil(1.* length / threads);
 
     float time;
     cudaEvent_t start, stop;
@@ -81,11 +82,11 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
 
-    integrate<<<blocks, 1024>>>(d_x_list, d_y_list, d_result_list, d_length);
+    integrate<<<blocks, threads>>>(d_x_list, d_y_list, d_result_list, d_length);
 
     cudaDeviceSynchronize();
 
-    sum_array<<<blocks, 32>>>(d_result_list, d_length, d_result);
+    sum_array<<<blocks, threads>>>(d_result_list, d_length, d_result);
 
     cudaDeviceSynchronize();
 
@@ -93,7 +94,7 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&time, start, stop);
 
-    std::cout << "Time taken by kernel: " << time << std::endl;
+    std::cout << "Time taken by kernel: " << time << "ms" << std::endl;
 
     cudaMemcpy(&result, d_result, sizeof(float), cudaMemcpyDeviceToHost);
 
