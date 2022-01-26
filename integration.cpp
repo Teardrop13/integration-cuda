@@ -49,14 +49,14 @@ int main() {
     std::cout << NUMBERS << " generated. Time: " << duration_generate.count() / 1000. << " ms" << std::endl << std::endl;
 
     // sorting
-    // std::sort(std::begin(x_list), std::end(x_list));
-    // std::cout << "list sorted" << std::endl;
+    std::sort(std::begin(x_list), std::end(x_list));
+    std::cout << "list sorted" << std::endl;
 
-    start = high_resolution_clock::now();
-    cpu_sort(x_list);
-    stop = high_resolution_clock::now();
-    auto duration_cpu_sorting = duration_cast<microseconds>(stop - start);
-    std::cout << "cpu sorting time: " << duration_cpu_sorting.count() / 1000. << " ms" << std::endl << std::endl;
+    // start = high_resolution_clock::now();
+    // cpu_sort(x_list);
+    // stop = high_resolution_clock::now();
+    // auto duration_cpu_sorting = duration_cast<microseconds>(stop - start);
+    // std::cout << "cpu sorting time: " << duration_cpu_sorting.count() / 1000. << " ms" << std::endl << std::endl;
 
     // cpu
     start = high_resolution_clock::now();
