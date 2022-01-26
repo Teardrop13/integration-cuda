@@ -14,18 +14,11 @@ long long *d_length;
 float *d_result;
 float *d_result_list;
 
-__global__ void integrate(float *d_x_list, float *d_y_list, float *d_result_list, long long *d_length) {
+__global__ void integrate(float *d_x_list, float *d_y_list, float *d_result, long long *d_length) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (i < *(d_length)-1) {
-        d_result_list[i] = (d_y_list[i] + d_y_list[i+1]) * (d_x_list[i+1] - d_x_list[i]) / 2;
-    }
-}
-
-__global__ void sum_array(float *d_list, long long *d_length, float *d_result) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i < (*d_length)-1) {
-        atomicAdd(d_result, d_list[i]);
+        atomicAdd(d_result, (d_y_list[i] + d_y_list[i+1]) * (d_x_list[i+1] - d_x_list[i]) / 2);
     }
 }
 
@@ -82,13 +75,10 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
 
-    integrate<<<blocks, threads>>>(d_x_list, d_y_list, d_result_list, d_length);
+    integrate<<<blocks, threads>>>(d_x_list, d_y_list, d_result, d_length);
 
     cudaDeviceSynchronize();
 
-    sum_array<<<blocks, threads>>>(d_result_list, d_length, d_result);
-
-    cudaDeviceSynchronize();
 
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
