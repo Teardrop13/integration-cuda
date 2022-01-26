@@ -1,7 +1,4 @@
-#include <math.h>
-#include <stdio.h>
-#include <algorithm>
-#include <time.h>
+#include "generator.h"
 
 
 void generate(float *x_list, float *y_list, const int number, const float max) {
@@ -17,5 +14,10 @@ void generate(float *x_list, float *y_list, const int number, const float max) {
             x_list[i] = x;
             y_list[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/max));
         }
+
+        if (i % 10000 == 0) {
+            std::cout << i << " numbers" << std::endl;
+        }
+
     }
 }

@@ -1,9 +1,5 @@
 #include "integration_alg_gpu.h"
-#include <iostream>
-#include <cuda.h>
-#include <cuda_runtime.h>
-#include <device_launch_parameters.h>
-#include <math.h>
+
 
 long maxGridSize;
 long maxThreadsPerBlock;
@@ -94,7 +90,7 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&time, start, stop);
 
-    std::cout << "Time taken by kernel: " << time << "ms" << std::endl;
+    std::cout << "gpu integration time: " << time << "ms" << std::endl;
 
     cudaMemcpy(&result, d_result, sizeof(float), cudaMemcpyDeviceToHost);
 
