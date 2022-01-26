@@ -1,0 +1,50 @@
+10 000
+
+
+
+==================================================
+100 000
+
+
+
+
+
+==================================================
+200 000
+
+200000 generated. Time: 158222 ms
+list sorted
+==============================================
+Max dimension size of a grid size (x): 2147483647
+Maximum number of threads per block: 1024
+==============================================
+
+gpu integration time: 0.854016ms
+gpu allocating arrays + integration time: 96.986 ms
+cpu integration time: 1.425 ms
+==============================================
+cpu result: 4.99935e+09
+gpu result: 4.99936e+09
+
+200000 generated. Time: 154502 ms
+list sorted
+==============================================
+Max dimension size of a grid size (x): 2147483647
+Maximum number of threads per block: 1024
+==============================================
+
+gpu integration time: 0.939968ms
+gpu allocating arrays + integration time: 128.408 ms
+cpu integration time: 2.389 ms
+==============================================
+cpu result: 5.00212e+09
+gpu result: 5.00212e+09
+
+
+
+==================================================
+500 000
+
+
+
+
