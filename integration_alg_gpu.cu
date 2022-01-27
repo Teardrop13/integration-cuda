@@ -84,6 +84,7 @@ float gpu_integrate(float *x_list, float *y_list, long long length) {
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&time, start, stop);
 
+    myfile << time << ",";
     std::cout << "gpu integration time: " << time << "ms" << std::endl;
 
     cudaMemcpy(&result, d_result, sizeof(float), cudaMemcpyDeviceToHost);
