@@ -4,6 +4,8 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <math.h>
+#include <iostream>
+#include <fstream>
 
 long maxGridSize;
 long maxThreadsPerBlock;
@@ -46,7 +48,7 @@ void cuda_clean() {
     cudaFree(d_result);
 }
 
-float gpu_integrate(float *x_list, float *y_list, long long length) {
+float gpu_integrate(float *x_list, float *y_list, long long length, std::ofstream& myfile) {
     cuda_initialize();
 
     float result = 0;
